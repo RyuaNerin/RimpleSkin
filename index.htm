@@ -153,7 +153,7 @@
 
                      if (combatantName.search("요정 에오스") != -1)     var combatantName = 'Eos';
                 else if (combatantName.search("요정 셀레네") != -1)     var combatantName = 'Selene';
-        　 	   else if (combatantName.search("가루다 에기") != -1)     var combatantName = 'Garuda';
+        　 	    else if (combatantName.search("가루다 에기") != -1)     var combatantName = 'Garuda';
                 else if (combatantName.search("타이탄 에기") != -1)     var combatantName = 'Titan';
                 else if (combatantName.search("이프리트 에기") != -1)   var combatantName = 'Ifrit';
                 else if (combatantName.search("카벙클 에메랄드") != -1) var combatantName = 'emerald';
@@ -170,7 +170,7 @@
                 var tableRow = newTableBody.insertRow(newTableBody.rows.length);
 
                 var cell = tableRow.insertCell(0);
-                cell.innerHTML = "<img class='jobIcon' src='./img/job/" + combatant.JobOrName + ".png'>";
+                cell.innerHTML = "<img class='jobIcon' src='./img/job/" + combatant.JobOrName.toLowerCase() + ".png'>";
                 dpsBarEffect(cell, combatant, combatantIndex);
 
                 cell = tableRow.insertCell(1);
@@ -219,7 +219,7 @@
             else if (schPet.indexOf(name) != -1) job = "Sch";
             else if (mchPet.indexOf(name) != -1) job = "Mch";
             else if (name == "Chocobo")          job = "Cho";
-            else if (name == "Limit Break")      job = "Cho";
+            else if (name == "Limit Break")      job = "limitbreak";
 
             if (!(job in BarColors)) job = "Etc";
 
@@ -277,3 +277,4 @@
     </table>
 </body>
 </html>
+7
