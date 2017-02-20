@@ -66,14 +66,7 @@
         #combatantTableBody tr {
             line-height: 20px;
             text-align: center;
-        }
-
-        #combatantTableBody tr:nth-child(2n+1) {
-            background-color: rgba(0,0,0,0.2);
-        }
-
-        #combatantTableBody tr:nth-child(2n) {
-            background-color: rgba(0,0,0,0.6);
+            border-bottom: 1px solid rgba(0,0,0,0.2);
         }
 
         #combatantTableBody td {
@@ -151,18 +144,18 @@
             for (var combatantName in data.Combatant) {
                 var combatant = data.Combatant[combatantName];
 
-                     if (combatantName.search("요정 에오스") != -1)     var combatantName = 'Eos';
-                else if (combatantName.search("요정 셀레네") != -1)     var combatantName = 'Selene';
-        　 	    else if (combatantName.search("가루다 에기") != -1)     var combatantName = 'Garuda';
-                else if (combatantName.search("타이탄 에기") != -1)     var combatantName = 'Titan';
-                else if (combatantName.search("이프리트 에기") != -1)   var combatantName = 'Ifrit';
+                     if (combatantName.search("요정 에오스")     != -1) var combatantName = 'Eos';
+                else if (combatantName.search("요정 셀레네")     != -1) var combatantName = 'Selene';
+        　 	   else if (combatantName.search("가루다 에기")     != -1) var combatantName = 'Garuda';
+                else if (combatantName.search("타이탄 에기")     != -1) var combatantName = 'Titan';
+                else if (combatantName.search("이프리트 에기")   != -1) var combatantName = 'Ifrit';
                 else if (combatantName.search("카벙클 에메랄드") != -1) var combatantName = 'emerald';
-                else if (combatantName.search("카벙클 토파즈") != -1)   var combatantName = 'topaz';
-                else if (combatantName.search("자동포탑 룩") != -1)     var combatantName = 'Look';
-                else if (combatantName.search("자동포탑 비숍") != -1)   var combatantName = 'Bishop';
-                else if (combatantName.search("리미트 브레이크") != -1) var combatantName = 'Limit Break';
-                else if (combatantName.search("Limit Break") != -1)     var combatantName = 'Limit Break';
-                else if (combatantName.search(/\)$/) != -1)             var combatantName = 'Chocobo';
+                else if (combatantName.search("카벙클 토파즈")   != -1) var combatantName = 'topaz';
+                else if (combatantName.search("자동포탑 룩")     != -1) var combatantName = 'Look';
+                else if (combatantName.search("자동포탑 비숍")   != -1) var combatantName = 'Bishop';
+                else if (combatantName.search("리미트 브레이크") != -1) var combatantName = 'LimitBreak';
+                else if (combatantName.search("Limit Break")     != -1) var combatantName = 'LimitBreak';
+                else if (combatantName.search(/\)$/)             != -1) var combatantName = 'Chocobo';
                 else                                                    var combatantName = 'error';
 
 	            combatant.JobOrName = combatant.Job || combatantName;
@@ -175,7 +168,7 @@
 
                 cell = tableRow.insertCell(1);
                 cell.style.textAlign = "left";
-                cell.innerText = combatant["name"];
+                cell.innerHTML = combatant["name"];
 
                 cell = tableRow.insertCell(2);
                 cell.innerText = combatant["encdps"];
@@ -186,6 +179,7 @@
 
                 cell = tableRow.insertCell(4);
                 cell.innerText = combatant["crithit%"];
+                Zero2BarEffect(cell);
 
                 cell = tableRow.insertCell(5);
                 cell.innerText = combatant["misses"];
@@ -219,7 +213,7 @@
             else if (schPet.indexOf(name) != -1) job = "Sch";
             else if (mchPet.indexOf(name) != -1) job = "Mch";
             else if (name == "Chocobo")          job = "Cho";
-            else if (name == "Limit Break")      job = "limitbreak";
+            else if (name == "LimitBreak")       job = "Lim";
 
             if (!(job in BarColors)) job = "Etc";
 
