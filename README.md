@@ -18,3 +18,9 @@
  |SWING|데미지 넣은 횟수. (도트, 평타, 스킬 등등)|
  |H%|힐 한 비율|
  |DIE|죽은 횟수|
+
+ # 사용 방법
+
+ - OverlayPlugins 에서 URL 에 `https://ryuanerin.github.io/RimpleSkin/` 입력
+
+ - 혹은 [여기](https://github.com/RyuaNerin/RimpleSkin/archive/gh-pages.zip) 에서 다운로드
