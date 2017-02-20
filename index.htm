@@ -244,11 +244,11 @@
 			cell.innerText = cell.innerText.replace( /(\d)(?=(\d\d\d)+(?!\d))/g,'$1,');
 		}
         function Zero2BarEffect(cell) {
-            if (cell.innerText == "0")
+            if (cell.innerText == "0" || cell.innerText == "0%")
                 cell.innerText = "-";
         }
         function BarBar2BarEffect(cell) {
-            if (cell.innerText == "--")
+            if (cell.innerText == "--" || cell.innerText == "0%")
                 cell.innerText = "-";
         }
     </script>
