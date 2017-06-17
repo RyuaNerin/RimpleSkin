@@ -26,31 +26,11 @@
             background-repeat: no-repeat;
         }
 
-        .encTime{
-            color: #FFbb00;
-            text-shadow: -1px 0 3px #151515, 0 1px 3px #151515, 1px 0 3px #151515, 0 -1px 3px #151515;
-            overflow: hidden;
-			font-weight: 600;
-			white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        #encounter {
-            color: #DED7BE;
-            text-shadow: -1px 0 2px #795516, 0 1px 2px #795516, 1px 0 2px #795516, 0 -1px 2px #795516;
-            font-weight: 300;
-            white-space: nowrap;
-        }
-
         #combatantTable {
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
             padding: 0px;
-        }
-
-        .combatantTableHeader tr {
-            border-bottom: 1px solid rgba(0,0,0,0.3);
         }
 
         #combatantTableBody {
@@ -60,7 +40,6 @@
             white-space: nowrap;
             text-overflow: clip;
             overflow: hidden;
-            border-bottom: 1px solid rgba(0,0,0,0.3);
         }
 
         #combatantTableBody tr {
@@ -132,19 +111,20 @@
         });
 
         function update(data) {
-            document.getElementById('encounter').innerHTML = "<span class='encTime'>[" + data.Encounter.duration + "]</span> " + data.Encounter.title + " (" + data.Encounter.dps + ")";
-
             var table = document.getElementById('combatantTable');
             var oldTableBody = table.tBodies.namedItem('combatantTableBody');
             var newTableBody = document.createElement("tbody");
             newTableBody.id = "combatantTableBody";
 
             var combatantIndex = 0;
-            for (var combatantName in data.Combatant) {
-                var combatant = data.Combatant[combatantName];
-
-				var icon  = combatant.Job;
-				var color = combatant.Job;
+            for (var entriesName in data.Enmity.Entries) {
+                var entry = data.Enmity.Entries[entriesName];
+				if (entry.isPet)
+					continue;
+				
+				var name  = entry.Name;
+				var icon  = entry.JobName;
+				var color = entry.JobName;
 
                      if (name.search("요정 에오스")     != -1) { icon = "eos"; color = 'sch'; }
                 else if (name.search("요정 셀레네")     != -1) { icon = "selene"; color = 'sch'; }
@@ -161,95 +141,46 @@
 				
 				color = color.toLowerCase();
 
+				if (!(color in BarColors)) color = "etc";
+
                 var tableRow = newTableBody.insertRow(newTableBody.rows.length);
 
                 var cell = tableRow.insertCell(0);
                 cell.innerHTML = "<img class='jobIcon' src='./images/job/" + icon + ".png'>";
-                dpsBarEffect(cell, combatant, combatantIndex, color);
+                dpsBarEffect(cell, entry, combatantIndex, color);
 
                 cell = tableRow.insertCell(1);
                 cell.style.textAlign = "left";
-                cell.innerHTML = combatant["name"];
+                cell.innerHTML = entry["Name"];
 
                 cell = tableRow.insertCell(2);
-                cell.innerText = combatant["encdps"];
-                insertDpsCommaEffect(cell);
-
-                cell = tableRow.insertCell(3);
-                cell.innerText = combatant["damage%"];
-
-                cell = tableRow.insertCell(4);
-                cell.innerText = combatant["crithit%"];
-                Zero2BarEffect(cell);
-
-                cell = tableRow.insertCell(5);
-                cell.innerText = combatant["misses"];
-                Zero2BarEffect(cell);
-
-                cell = tableRow.insertCell(6);
-                cell.innerText = combatant["swings"];
-
-                cell = tableRow.insertCell(7);
-                cell.innerText = combatant["healed%"];
-                BarBar2BarEffect(cell);
-
-                cell = tableRow.insertCell(8);
-                cell.innerText = combatant["deaths"];
-                Zero2BarEffect(cell);
+                cell.innerText = entry["EnmityString"];
 
                 combatantIndex++;
             }
 
             table.replaceChild(newTableBody, oldTableBody);
         }
-		function dpsBarEffect(cell, combatant, index, colorKey) {
-			if (index == 0) dpsBarEffect.topdeeps = parseFloat(combatant["encdps"]);
+
+		function dpsBarEffect(cell, entry, index, color) {
+			if (index == 0)
+				dpsBarEffect.topdeeps = parseFloat(entry["HateRate"]);
 
 			var tableRow = cell.parentNode;
-			tableRow.style.background = "-webkit-gradient(linear, left top,right top, color-stop(1," + BarColors[colorKey] + "), to(rgba(24,24,24,0.2)))";
-			tableRow.style.backgroundSize = (parseFloat(combatant["encdps"]) * 100 / parseFloat(dpsBarEffect.topdeeps)) + "% 100%";
+			tableRow.style.background = "-webkit-gradient(linear, left top,right top, color-stop(1," + BarColors[color] + "), to(rgba(24,24,24,0.2)))";
+			tableRow.style.backgroundSize = (parseFloat(entry["HateRate"]) * 100 / parseFloat(dpsBarEffect.topdeeps)) + "% 100%";
 			tableRow.style.backgroundAttachment = "fixed";
 			tableRow.style.backgroundRepeat = "no-repeat";
 		}
-		function insertDpsCommaEffect(cell) {
-			var num = parseFloat(cell.innerText);
-
-            if (num >= 100000)
-                cell.innerText = (num / 1000).toFixed(2) + 'K';
-            else if (num >= 100000000)
-                cell.innerText = (num / 1000000).toFixed(2) + 'M';
-            else
-                cell.innerText = num.toFixed(2);
-
-			cell.innerText = cell.innerText.replace( /(\d)(?=(\d\d\d)+(?!\d))/g,'$1,');
-		}
-        function Zero2BarEffect(cell) {
-            if (cell.innerText == "0" || cell.innerText == "0%")
-                cell.innerText = "-";
-        }
-        function BarBar2BarEffect(cell) {
-            if (cell.innerText == "--" || cell.innerText == "0%")
-                cell.innerText = "-";
-        }
     </script>
 </head>
 <body>
-    <div id="encounter">
-        <span class='encTime'>[00:00]</span> 전투 대기 중
-    </div>
-
     <table id="combatantTable">
         <thead class="combatantTableHeader">
             <tr>
                 <th style="width: 24px;"></th>
-                <th style="width: 100%;"></th>
-                <th style="width: 60px;"><img src="./images/header/dps.png"></th>
-                <th style="width: 32px;"><img src="./images/header/dmgPer.png"></th>
-                <th style="width: 32px;"><img src="./images/header/crit.png"></th>
-                <th style="width: 24px;"><img src="./images/header/miss.png"></th>
-                <th style="width: 32px;"><img src="./images/header/swing.png"></th>
-                <th style="width: 24px;"><img src="./images/header/hPer.png"></th>
-                <th style="width: 24px;"><img src="./images/header/die.png"></th>
+                <th style="width: 60%;"></th>
+                <th style="width: 40%;"></th>
             </tr>
         </thead>
         <tbody id="combatantTableBody">
