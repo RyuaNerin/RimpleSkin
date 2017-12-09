@@ -26,6 +26,24 @@
             background-repeat: no-repeat;
         }
 
+        .encounter {
+            color: #DED7BE;
+            text-shadow: -1px 0 2px #795516, 0 1px 2px #795516, 1px 0 2px #795516, 0 -1px 2px #795516;
+            font-weight: 300;
+            white-space: nowrap;
+        }
+
+        #encDistance {
+            color: #FFbb00;
+            text-shadow: -1px 0 3px #151515, 0 1px 3px #151515, 1px 0 3px #151515, 0 -1px 3px #151515;
+            overflow: hidden;
+			font-weight: 600;
+			white-space: nowrap;
+            text-overflow: ellipsis;
+			font-family: 'consolas';
+			font-size: 16px;
+        }
+
         #combatantTable {
             width: 100%;
             table-layout: fixed;
@@ -111,11 +129,13 @@
         });
 
         function update(data) {
+			document.getElementById('encDistance').innerText = data.Enmity.Target ? (data.Enmity.Target.EffectiveDistance + " m") : "-";
+		
             var table = document.getElementById('combatantTable');
             var oldTableBody = table.tBodies.namedItem('combatantTableBody');
             var newTableBody = document.createElement("tbody");
-            newTableBody.id = "combatantTableBody";
-
+            newTableBody.id = "combatantTableBody";			
+			
             var combatantIndex = 0;
             for (var entriesName in data.Enmity.Entries) {
                 var entry = data.Enmity.Entries[entriesName];
@@ -141,7 +161,8 @@
 				
 				color = color.toLowerCase();
 
-				if (!(color in BarColors)) color = "etc";
+				if (!(color in BarColors))
+					continue;
 
                 var tableRow = newTableBody.insertRow(newTableBody.rows.length);
 
@@ -175,6 +196,9 @@
     </script>
 </head>
 <body>
+    <div class="encounter">
+        <span id="encDistance">-</span>
+    </div>
     <table id="combatantTable">
         <thead class="combatantTableHeader">
             <tr>
