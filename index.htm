@@ -21,6 +21,7 @@
         }
 
         body {
+            overflow:hidden;
             background-image: url(./images/handle.png);
             background-position: bottom right;
             background-repeat: no-repeat;
@@ -30,8 +31,8 @@
             color: #FFbb00;
             text-shadow: -1px 0 3px #151515, 0 1px 3px #151515, 1px 0 3px #151515, 0 -1px 3px #151515;
             overflow: hidden;
-			font-weight: 600;
-			white-space: nowrap;
+            font-weight: 600;
+            white-space: nowrap;
             text-overflow: ellipsis;
         }
 
@@ -55,7 +56,7 @@
 
         #combatantTableBody {
             color: #FFFFFF;
-			text-shadow: 1px 1px 0px #000000, -1px 0 2px #000000, 0 1px 2px #000000, 1px 0 2px #000000, 0 -1px 2px #000000;
+            text-shadow: 1px 1px 0px #000000, -1px 0 2px #000000, 0 1px 2px #000000, 1px 0 2px #000000, 0 -1px 2px #000000;
             font-weight: normal;
             white-space: nowrap;
             text-overflow: clip;
@@ -91,6 +92,8 @@
             "pgl": "#e6b52e",
             "mnk": "#e6b52e",
 
+            "sam": "#fec983",
+
             "lnc": "#7789e4",
             "drg": "#7789e4",
 
@@ -105,6 +108,8 @@
 
             "thm": "#8e6dbd",
             "blm": "#8e6dbd",
+
+            "rdm": "#f7bdcb",
 
             "mch": "#24bde5",
 
@@ -143,9 +148,9 @@
             for (var combatantName in data.Combatant) {
                 var combatant = data.Combatant[combatantName];
 
-				var name  = combatantName;
-				var icon  = combatant.Job;
-				var color = combatant.Job;
+                var name  = combatantName;
+                var icon  = combatant.Job.toLowerCase();
+                var color = combatant.Job;
 
                      if (name.search("요정 에오스")     != -1) { icon = "eos"; color = 'sch'; }
                 else if (name.search("요정 셀레네")     != -1) { icon = "selene"; color = 'sch'; }
@@ -159,11 +164,12 @@
                 else if (name.search("리미트 브레이크") != -1) { icon = "lim"; color = 'lim'; }
                 else if (name.search("Limit Break")     != -1) { icon = "lim"; color = 'lim'; }
                 else if (name.search(/\)$/)             != -1) { icon = "cho"; color = 'cho'; }
-				
-				color = color.toLowerCase();
-				
-				if (color == "etc")
-					continue;
+                
+                if (color)
+                    color = color.toLowerCase();
+                
+                if (color == "etc")
+                    continue;
 
                 var tableRow = newTableBody.insertRow(newTableBody.rows.length);
 
@@ -183,21 +189,25 @@
                 cell.innerText = combatant["damage%"];
 
                 cell = tableRow.insertCell(4);
-                cell.innerText = combatant["crithit%"];
+                cell.innerText = combatant["DirectHitPct"];
                 Zero2BarEffect(cell);
 
                 cell = tableRow.insertCell(5);
-                cell.innerText = combatant["misses"];
+                cell.innerText = combatant["crithit%"];
                 Zero2BarEffect(cell);
 
                 cell = tableRow.insertCell(6);
-                cell.innerText = combatant["swings"];
+                cell.innerText = combatant["CritDirectHitPct"];
+                Zero2BarEffect(cell);
 
                 cell = tableRow.insertCell(7);
+                cell.innerText = combatant["swings"];
+                
+                cell = tableRow.insertCell(8);
                 cell.innerText = combatant["healed%"];
                 BarBar2BarEffect(cell);
 
-                cell = tableRow.insertCell(8);
+                cell = tableRow.insertCell(9);
                 cell.innerText = combatant["deaths"];
                 Zero2BarEffect(cell);
 
@@ -206,17 +216,17 @@
 
             table.replaceChild(newTableBody, oldTableBody);
         }
-		function dpsBarEffect(cell, combatant, index, colorKey) {
-			if (index == 0) dpsBarEffect.topdeeps = parseFloat(combatant["encdps"]);
+        function dpsBarEffect(cell, combatant, index, colorKey) {
+            if (index == 0) dpsBarEffect.topdeeps = parseFloat(combatant["encdps"]);
 
-			var tableRow = cell.parentNode;
-			tableRow.style.background = "-webkit-gradient(linear, left top,right top, color-stop(1," + BarColors[colorKey] + "), to(rgba(24,24,24,0.2)))";
-			tableRow.style.backgroundSize = (parseFloat(combatant["encdps"]) * 100 / parseFloat(dpsBarEffect.topdeeps)) + "% 100%";
-			tableRow.style.backgroundAttachment = "fixed";
-			tableRow.style.backgroundRepeat = "no-repeat";
-		}
-		function insertDpsCommaEffect(cell) {
-			var num = parseFloat(cell.innerText);
+            var tableRow = cell.parentNode;
+            tableRow.style.background = "-webkit-gradient(linear, left top,right top, color-stop(1," + BarColors[colorKey] + "), to(rgba(24,24,24,0.2)))";
+            tableRow.style.backgroundSize = (parseFloat(combatant["encdps"]) * 100 / parseFloat(dpsBarEffect.topdeeps)) + "% 100%";
+            tableRow.style.backgroundAttachment = "fixed";
+            tableRow.style.backgroundRepeat = "no-repeat";
+        }
+        function insertDpsCommaEffect(cell) {
+            var num = parseFloat(cell.innerText);
 
             if (num >= 100000)
                 cell.innerText = (num / 1000).toFixed(2) + 'K';
@@ -225,8 +235,8 @@
             else
                 cell.innerText = num.toFixed(2);
 
-			cell.innerText = cell.innerText.replace( /(\d)(?=(\d\d\d)+(?!\d))/g,'$1,');
-		}
+            cell.innerText = cell.innerText.replace( /(\d)(?=(\d\d\d)+(?!\d))/g,'$1,');
+        }
         function Zero2BarEffect(cell) {
             if (cell.innerText == "0" || cell.innerText == "0%")
                 cell.innerText = "-";
@@ -249,8 +259,9 @@
                 <th style="width: 100%;"></th>
                 <th style="width: 60px;"><img src="./images/header/dps.png"></th>
                 <th style="width: 32px;"><img src="./images/header/dmgPer.png"></th>
-                <th style="width: 32px;"><img src="./images/header/crit.png"></th>
-                <th style="width: 24px;"><img src="./images/header/miss.png"></th>
+                <th style="width: 24px;"><img src="./images/header/dhit.png"></th>
+                <th style="width: 24px;"><img src="./images/header/crit.png"></th>
+                <th style="width: 24px;"><img src="./images/header/cd.png"></th>
                 <th style="width: 32px;"><img src="./images/header/swing.png"></th>
                 <th style="width: 24px;"><img src="./images/header/hPer.png"></th>
                 <th style="width: 24px;"><img src="./images/header/die.png"></th>

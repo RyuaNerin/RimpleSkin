@@ -21,6 +21,7 @@
         }
 
         body {
+            overflow:hidden;
             background-image: url(./images/handle.png);
             background-position: bottom right;
             background-repeat: no-repeat;
@@ -37,11 +38,11 @@
             color: #FFbb00;
             text-shadow: -1px 0 3px #151515, 0 1px 3px #151515, 1px 0 3px #151515, 0 -1px 3px #151515;
             overflow: hidden;
-			font-weight: 600;
-			white-space: nowrap;
+            font-weight: 600;
+            white-space: nowrap;
             text-overflow: ellipsis;
-			font-family: 'consolas';
-			font-size: 16px;
+            font-family: 'consolas';
+            font-size: 16px;
         }
 
         #combatantTable {
@@ -88,6 +89,8 @@
             "pgl": "#e6b52e",
             "mnk": "#e6b52e",
 
+            "sam": "#fec983",
+
             "lnc": "#7789e4",
             "drg": "#7789e4",
 
@@ -102,6 +105,8 @@
 
             "thm": "#8e6dbd",
             "blm": "#8e6dbd",
+
+            "rdm": "#f7bdcb",
 
             "mch": "#24bde5",
 
@@ -129,22 +134,22 @@
         });
 
         function update(data) {
-			document.getElementById('encDistance').innerText = data.Enmity.Target ? (data.Enmity.Target.EffectiveDistance + " m") : "-";
-		
+            document.getElementById('encDistance').innerText = data.Enmity.Target ? (data.Enmity.Target.EffectiveDistance + " m") : "-";
+        
             var table = document.getElementById('combatantTable');
             var oldTableBody = table.tBodies.namedItem('combatantTableBody');
             var newTableBody = document.createElement("tbody");
-            newTableBody.id = "combatantTableBody";			
-			
+            newTableBody.id = "combatantTableBody";            
+            
             var combatantIndex = 0;
             for (var entriesName in data.Enmity.Entries) {
                 var entry = data.Enmity.Entries[entriesName];
-				if (entry.isPet)
-					continue;
-				
-				var name  = entry.Name;
-				var icon  = entry.JobName;
-				var color = entry.JobName;
+                if (entry.isPet)
+                    continue;
+                
+                var name  = entry.Name;
+                var icon  = entry.JobName.toLowerCase();
+                var color = entry.JobName;
 
                      if (name.search("요정 에오스")     != -1) { icon = "eos"; color = 'sch'; }
                 else if (name.search("요정 셀레네")     != -1) { icon = "selene"; color = 'sch'; }
@@ -158,11 +163,12 @@
                 else if (name.search("리미트 브레이크") != -1) { icon = "lim"; color = 'lim'; }
                 else if (name.search("Limit Break")     != -1) { icon = "lim"; color = 'lim'; }
                 else if (name.search(/\)$/)             != -1) { icon = "cho"; color = 'cho'; }
-				
-				color = color.toLowerCase();
+                
+                if (color)
+                    color = color.toLowerCase();
 
-				if (!(color in BarColors))
-					continue;
+                if (!(color in BarColors))
+                    continue;
 
                 var tableRow = newTableBody.insertRow(newTableBody.rows.length);
 
@@ -183,16 +189,16 @@
             table.replaceChild(newTableBody, oldTableBody);
         }
 
-		function dpsBarEffect(cell, entry, index, color) {
-			if (index == 0)
-				dpsBarEffect.topdeeps = parseFloat(entry["HateRate"]);
+        function dpsBarEffect(cell, entry, index, color) {
+            if (index == 0)
+                dpsBarEffect.topdeeps = parseFloat(entry["HateRate"]);
 
-			var tableRow = cell.parentNode;
-			tableRow.style.background = "-webkit-gradient(linear, left top,right top, color-stop(1," + BarColors[color] + "), to(rgba(24,24,24,0.2)))";
-			tableRow.style.backgroundSize = (parseFloat(entry["HateRate"]) * 100 / parseFloat(dpsBarEffect.topdeeps)) + "% 100%";
-			tableRow.style.backgroundAttachment = "fixed";
-			tableRow.style.backgroundRepeat = "no-repeat";
-		}
+            var tableRow = cell.parentNode;
+            tableRow.style.background = "-webkit-gradient(linear, left top,right top, color-stop(1," + BarColors[color] + "), to(rgba(24,24,24,0.2)))";
+            tableRow.style.backgroundSize = (parseFloat(entry["HateRate"]) * 100 / parseFloat(dpsBarEffect.topdeeps)) + "% 100%";
+            tableRow.style.backgroundAttachment = "fixed";
+            tableRow.style.backgroundRepeat = "no-repeat";
+        }
     </script>
 </head>
 <body>
